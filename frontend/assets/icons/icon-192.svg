@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="32" fill="#1a1a2e"/>
+  <g transform="translate(40,24)">
+    <!-- Simplified fretboard -->
+    <rect x="10" y="0" width="92" height="144" rx="4" fill="#2c1a0e"/>
+    <rect x="10" y="0" width="92" height="6" fill="#d4c5a9"/>
+    <!-- Strings -->
+    <line x1="20" y1="0" x2="20" y2="144" stroke="#c0c0c0" stroke-width="3"/>
+    <line x1="38" y1="0" x2="38" y2="144" stroke="#c0c0c0" stroke-width="2.5"/>
+    <line x1="56" y1="0" x2="56" y2="144" stroke="#c0c0c0" stroke-width="2"/>
+    <line x1="74" y1="0" x2="74" y2="144" stroke="#c0c0c0" stroke-width="1.5"/>
+    <line x1="92" y1="0" x2="92" y2="144" stroke="#c0c0c0" stroke-width="1"/>
+    <!-- Frets -->
+    <line x1="10" y1="36" x2="102" y2="36" stroke="#8a8a8a" stroke-width="2"/>
+    <line x1="10" y1="68" x2="102" y2="68" stroke="#8a8a8a" stroke-width="2"/>
+    <line x1="10" y1="96" x2="102" y2="96" stroke="#8a8a8a" stroke-width="2"/>
+    <line x1="10" y1="120" x2="102" y2="120" stroke="#8a8a8a" stroke-width="2"/>
+    <!-- Note highlight -->
+    <circle cx="56" cy="52" r="12" fill="#4fc3f7" opacity="0.9"/>
+  </g>
+</svg>

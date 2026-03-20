@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fretboard SVG Visual Test</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/fretboard.css">
+    <style>
+        .test-section { margin: 20px; padding: 16px; background: var(--bg-surface); border-radius: 8px; }
+        .test-section h2 { margin-bottom: 12px; color: var(--accent); }
+        #log { font-family: monospace; font-size: 13px; padding: 12px; background: var(--bg-card); border-radius: 4px; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1 style="padding:16px; color: var(--accent);">Fretboard SVG Visual Test</h1>
+
+    <div class="test-section">
+        <h2>Standard Tuning - 12 Frets</h2>
+        <div id="fretboard-12"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Tap Log</h2>
+        <div id="log"></div>
+    </div>
+
+    <script type="module">
+        import { FretboardSVG } from '/js/components/fretboard-svg.js';
+        import { eventBus } from '/js/services/events.js';
+        import { noteAt } from '/js/theory/fretboard.js';
+        import { chromaticToName } from '/js/theory/notes.js';
+
+        const fb = new FretboardSVG(document.getElementById('fretboard-12'), {
+            fretCount: 12,
+        });
+
+        const log = document.getElementById('log');
+        eventBus.on('fretboard:tap', ({ stringIndex, fret }) => {
+            const note = chromaticToName(noteAt(stringIndex, fret));
+            const line = document.createElement('div');
+            line.textContent = `String ${stringIndex}, Fret ${fret} = ${note}`;
+            log.prepend(line);
+            fb.clearHighlights();
+            fb.highlightFret(stringIndex, fret, 'highlight-correct');
+        });
+    </script>
+</body>
+</html>

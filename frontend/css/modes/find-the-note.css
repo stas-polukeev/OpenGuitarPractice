@@ -1,0 +1,128 @@
+.find-note-ui {
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+}
+
+.challenge-prompt {
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    transition: background 0.2s, border-color 0.2s;
+    border: 1px solid transparent;
+}
+
+.challenge-text {
+    font-size: 1.15rem;
+}
+
+.challenge-text strong {
+    color: var(--accent);
+    font-size: 1.3rem;
+}
+
+.challenge-prompt.result-correct {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: var(--correct);
+}
+
+.challenge-prompt.result-wrong {
+    background: rgba(244, 67, 54, 0.15);
+    border-color: var(--wrong);
+}
+
+.challenge-prompt.result-timeout {
+    background: rgba(255, 171, 64, 0.15);
+    border-color: var(--expected);
+}
+
+.timeout-msg {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: var(--expected);
+    font-weight: 600;
+}
+
+.game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.score-display {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.score-display .score {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.score-display .progress {
+    color: var(--text-muted);
+}
+
+.score-display .streak {
+    color: var(--expected);
+    font-weight: 600;
+}
+
+.timer-bar {
+    height: 4px;
+    background: var(--bg-card);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 auto;
+    max-width: 200px;
+}
+
+.timer-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 1s linear;
+    border-radius: 2px;
+}
+
+.timer-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.game-over {
+    padding: 24px;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    text-align: center;
+}
+
+.game-over h2 {
+    color: var(--accent);
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+
+.game-over-score {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    color: var(--text);
+}
+
+.restart-btn {
+    background: var(--accent-dim);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    cursor: pointer;
+    min-height: 44px;
+}
+
+.restart-btn:hover {
+    background: var(--accent);
+}

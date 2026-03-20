@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#1a1a2e"/>
+  <g transform="translate(100,60)">
+    <rect x="25" y="0" width="260" height="392" rx="8" fill="#2c1a0e"/>
+    <rect x="25" y="0" width="260" height="14" fill="#d4c5a9"/>
+    <line x1="50" y1="0" x2="50" y2="392" stroke="#c0c0c0" stroke-width="6"/>
+    <line x1="102" y1="0" x2="102" y2="392" stroke="#c0c0c0" stroke-width="5"/>
+    <line x1="154" y1="0" x2="154" y2="392" stroke="#c0c0c0" stroke-width="4"/>
+    <line x1="206" y1="0" x2="206" y2="392" stroke="#c0c0c0" stroke-width="3"/>
+    <line x1="260" y1="0" x2="260" y2="392" stroke="#c0c0c0" stroke-width="2"/>
+    <line x1="25" y1="98" x2="285" y2="98" stroke="#8a8a8a" stroke-width="3"/>
+    <line x1="25" y1="186" x2="285" y2="186" stroke="#8a8a8a" stroke-width="3"/>
+    <line x1="25" y1="264" x2="285" y2="264" stroke="#8a8a8a" stroke-width="3"/>
+    <line x1="25" y1="332" x2="285" y2="332" stroke="#8a8a8a" stroke-width="3"/>
+    <circle cx="155" cy="142" r="6" fill="#5a4a3a" opacity="0.6"/>
+    <circle cx="155" cy="225" r="6" fill="#5a4a3a" opacity="0.6"/>
+    <circle cx="154" cy="142" r="28" fill="#4fc3f7" opacity="0.9"/>
+    <text x="154" y="150" text-anchor="middle" fill="#fff" font-size="24" font-weight="bold" font-family="sans-serif">A</text>
+  </g>
+</svg>
