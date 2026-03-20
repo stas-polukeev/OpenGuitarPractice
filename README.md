@@ -2,6 +2,12 @@
 
 A mobile-first Progressive Web App for self-teaching music theory on guitar. Works offline as a PWA — install it on your phone's home screen and practice anywhere.
 
+## Screenshots
+
+| Main Menu | Find the Note | Interval Map | Pentatonic Positions | Settings |
+|:---------:|:-------------:|:------------:|:-------------------:|:--------:|
+| ![Menu](docs/screenshots/01-main-menu.png) | ![Find](docs/screenshots/02-find-the-note.png) | ![Intervals](docs/screenshots/03-theory-intervals.png) | ![Pentatonic](docs/screenshots/04-theory-pentatonic.png) | ![Settings](docs/screenshots/05-settings.png) |
+
 ## What's Inside
 
 ### Practice Modes
