@@ -1,4 +1,4 @@
-const CACHE_NAME = 'guitar-v3';
+const CACHE_NAME = 'guitar-v4';
 
 const ASSETS = [
     '/',
@@ -36,6 +36,7 @@ const ASSETS = [
     '/js/pages/theory-scales.js',
     '/js/pages/theory-chords.js',
     '/js/pages/theory-circle.js',
+    '/js/pages/theory-notes.js',
     '/assets/icons/icon-192.svg',
     '/assets/icons/icon-512.svg',
 ];

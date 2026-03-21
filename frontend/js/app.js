@@ -26,12 +26,13 @@ const MENU = {
         label: 'Guitar Practice',
         items: [
             { slug: 'guitar-practice', name: 'Random Notes' },
-            { slug: 'string-practice', name: 'String Practice' },
+            { slug: 'string-practice-auto', name: 'String Practice' },
         ],
     },
     theory: {
         label: 'Theory',
         items: [
+            { slug: 'notes-on-fretboard', name: 'Notes on Fretboard' },
             { slug: 'intervals', name: 'Intervals' },
             { slug: 'chords', name: 'Chords' },
             { slug: 'circle-of-fifths', name: 'Circle of Fifths' },
@@ -44,6 +45,7 @@ const MENU = {
 };
 
 const THEORY_LOADERS = {
+    'notes-on-fretboard': () => import('./pages/theory-notes.js'),
     'intervals': () => import('./pages/theory-intervals.js'),
     'chords': () => import('./pages/theory-chords.js'),
     'circle-of-fifths': () => import('./pages/theory-circle.js'),

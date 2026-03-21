@@ -164,6 +164,13 @@ export class SettingsPanel {
                     <input type="number" id="sm-notes" min="1" max="100" value="${ms.notesPerGame}">
                 </div>
                 <div class="settings-group">
+                    <label for="sm-flash">On correct, flash</label>
+                    <select id="sm-flash">
+                        <option value="octaves" ${(ms.flashMode || 'octaves') === 'octaves' ? 'selected' : ''}>Same note (octaves)</option>
+                        <option value="all-natural" ${ms.flashMode === 'all-natural' ? 'selected' : ''}>All natural notes</option>
+                    </select>
+                </div>
+                <div class="settings-group">
                     <label><input type="checkbox" id="sm-timer" ${ms.timerEnabled ? 'checked' : ''}> Timer</label>
                 </div>
                 <div class="settings-group" id="sm-timer-sec-group" style="${ms.timerEnabled ? '' : 'display:none'}">
@@ -172,6 +179,7 @@ export class SettingsPanel {
                 </div>
             `;
 
+            this._bind('sm-flash', 'change', (e) => settings.setMode(slug, 'flashMode', e.target.value));
             this._bind('sm-min', 'change', (e) => settings.setMode(slug, 'minFret', parseInt(e.target.value, 10)));
             this._bind('sm-max', 'change', (e) => settings.setMode(slug, 'maxFret', parseInt(e.target.value, 10)));
             this._bind('sm-notes', 'change', (e) => settings.setMode(slug, 'notesPerGame', parseInt(e.target.value, 10)));
@@ -302,7 +310,7 @@ export class SettingsPanel {
             this._bind('sm-notes', 'change', (e) => settings.setMode(slug, 'notesPerGame', parseInt(e.target.value, 10)));
             this._bindStringFilter(mc, slug);
 
-        } else if (slug === 'string-practice') {
+        } else if (slug === 'string-practice' || slug === 'string-practice-auto') {
             const ms = settings.getMode(slug);
             mc.innerHTML = `
                 <h4>String Practice</h4>

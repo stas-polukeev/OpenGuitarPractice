@@ -4,6 +4,7 @@ const MODE_MODULES = {
     'interval-training': () => import('./interval-training/index.js'),
     'scale-practice': () => import('./scale-practice/index.js'),
     'string-practice': () => import('./string-practice/index.js'),
+    'string-practice-auto': () => import('./string-practice/index.js'),
 };
 
 const instances = {};

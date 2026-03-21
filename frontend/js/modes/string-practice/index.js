@@ -19,7 +19,8 @@ export default class StringPracticeMode extends ModeBase {
         this._failed = false;
         this._animating = false;
         this._startTime = 0;
-        this._isGuitarMode = false; // true = auto-advance (no tap needed)
+        // slug determines mode: 'string-practice-auto' = guitar mode
+        this._isGuitarMode = slug === 'string-practice-auto';
         this._timeout = null;
     }
 
@@ -27,6 +28,7 @@ export default class StringPracticeMode extends ModeBase {
         super.activate(container, fretboard);
         this.container = container;
         this.fretboard = fretboard;
+        this._isGuitarMode = this.slug === 'string-practice-auto';
         this._tapHandler = (d) => this._onTap(d);
         eventBus.on('fretboard:tap', this._tapHandler);
         this._showStart();
@@ -104,26 +106,18 @@ export default class StringPracticeMode extends ModeBase {
             g.stringLabels === 'numbers' ? (tuning.strings.length - s) : tuning.stringNames[s]
         ).join(', ');
 
+        const modeLabel = this._isGuitarMode ? 'Guitar mode — notes auto-advance on a timer.' : 'Tap each note on the fretboard to advance.';
         this.container.innerHTML = `
             <div class="find-note-ui">
                 <div class="challenge-prompt">
                     <span class="challenge-text">String Practice</span>
                     <div class="theory-desc" style="margin-top:8px">A string is assigned. Find each note in the sequence on that string.</div>
+                    <div class="theory-desc">${modeLabel}</div>
                     <div class="theory-desc">Strings in rotation: <strong>${strNames}</strong></div>
                 </div>
-                <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-                    <button class="restart-btn" id="sp-interactive">Interactive</button>
-                    <button class="restart-btn" id="sp-guitar" style="background:var(--accent-dim)">Guitar (auto)</button>
-                </div>
+                <button class="restart-btn" id="sp-start">Start</button>
             </div>`;
-        this.container.querySelector('#sp-interactive').addEventListener('click', () => {
-            this._isGuitarMode = false;
-            this._startRound();
-        });
-        this.container.querySelector('#sp-guitar').addEventListener('click', () => {
-            this._isGuitarMode = true;
-            this._startRound();
-        });
+        this.container.querySelector('#sp-start').addEventListener('click', () => this._startRound());
     }
 
     _startRound() {

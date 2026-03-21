@@ -19,7 +19,8 @@ export const DEFAULT_SETTINGS = {
         notesPerGame: 10,
         timerEnabled: false,
         timerSeconds: 5,
-        strings: [], // empty = all strings
+        strings: [],
+        flashMode: 'octaves', // 'octaves' or 'all-natural'
     },
     'guitar-practice': {
         minFret: 0,
@@ -38,6 +39,13 @@ export const DEFAULT_SETTINGS = {
         position: 1,
     },
     'string-practice': {
+        minFret: 0,
+        maxFret: 12,
+        notesPerRound: 7,
+        noteTime: 5,
+        strings: [],
+    },
+    'string-practice-auto': {
         minFret: 0,
         maxFret: 12,
         notesPerRound: 7,
