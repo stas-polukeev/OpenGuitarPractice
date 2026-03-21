@@ -6,6 +6,7 @@ import { noteAt } from '../../theory/fretboard.js';
 import { INTERVALS } from '../../theory/intervals-data.js';
 import { playNote } from '../../services/audio.js';
 import { eventBus } from '../../services/events.js';
+import { recordResult } from '../../services/stats.js';
 
 export default class IntervalTrainingMode extends ModeBase {
     constructor(slug) {
@@ -105,6 +106,7 @@ export default class IntervalTrainingMode extends ModeBase {
 
         this._lastRootString = rootString;
         this._lastInterval = interval.semitones;
+        this._challengeStart = Date.now();
 
         const rootNote = noteAt(rootString, rootFret, tuning);
         this._challenge = { rootString, rootFret, rootNote, interval, targetNote, validPositions };
@@ -139,6 +141,8 @@ export default class IntervalTrainingMode extends ModeBase {
             this._animating = true;
             this.total++;
             if (!this.failed) this.score++;
+            const responseMs = Date.now() - (this._challengeStart || 0);
+            recordResult(ch.rootString, ch.rootNote, !this.failed, responseMs);
             this.fretboard.highlightFret(stringIndex, fret, 'highlight-expected');
 
             if (settings.global.soundEnabled) {

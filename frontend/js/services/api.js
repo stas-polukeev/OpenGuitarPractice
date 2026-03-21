@@ -2,6 +2,7 @@ import { API_BASE } from '../config.js';
 import { noteAt } from '../theory/fretboard.js';
 import { chromaticToName, NATURAL_NOTE_INDICES } from '../theory/notes.js';
 import { getTuning } from '../theory/tunings.js';
+import { weightedPick } from './stats.js';
 
 async function request(path, options = {}) {
     const url = API_BASE + path;
@@ -42,7 +43,8 @@ function generateChallengeLocal(data) {
 
     if (pairs.length === 0) throw new Error('No valid notes for settings');
 
-    const pick = pairs[Math.floor(Math.random() * pairs.length)];
+    // Weighted pick: favor harder combinations (negative mining)
+    const pick = weightedPick(pairs);
     const id = Math.random().toString(36).slice(2, 14);
 
     return {

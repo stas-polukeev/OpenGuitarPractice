@@ -3,6 +3,7 @@ import { settings } from '../../services/settings.js';
 import { noteAt } from '../../theory/fretboard.js';
 import { getTuning } from '../../theory/tunings.js';
 import { NATURAL_NOTE_INDICES } from '../../theory/notes.js';
+import { recordResult } from '../../services/stats.js';
 
 export class GameState {
     constructor() {
@@ -19,6 +20,7 @@ export class GameState {
         this._lastCorrectNote = undefined;
         this._lastStringIndex = -1;
         this._lastNote = -1;
+        this._challengeStartTime = 0;
     }
 
     get notesPerGame() {
@@ -64,6 +66,7 @@ export class GameState {
 
         this.currentChallenge = challenge;
         this.failedCurrent = false;
+        this._challengeStartTime = Date.now();
         return this.currentChallenge;
     }
 
@@ -76,6 +79,9 @@ export class GameState {
         const correct = actual === this.currentChallenge.chromatic_index;
 
         if (correct) {
+            const responseMs = Date.now() - this._challengeStartTime;
+            recordResult(this.currentChallenge.string_index, this.currentChallenge.chromatic_index,
+                !this.failedCurrent, responseMs);
             this._lastCorrectNote = this.currentChallenge.chromatic_index;
             this._lastStringIndex = this.currentChallenge.string_index;
             this._lastNote = this.currentChallenge.chromatic_index;
