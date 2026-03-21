@@ -117,7 +117,7 @@ export default class StringPracticeMode extends ModeBase {
                 </div>
                 <button class="restart-btn" id="strp-start">Start</button>
             </div>`;
-        this.container.querySelector('#sp-start').addEventListener('click', () => this._startRound());
+        this.container.querySelector('#strp-start').addEventListener('click', () => this._startRound());
     }
 
     _startRound() {
