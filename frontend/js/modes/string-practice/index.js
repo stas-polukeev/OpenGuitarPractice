@@ -78,22 +78,35 @@ export default class StringPracticeMode extends ModeBase {
 
         if (reachable.length === 0) return [];
 
-        // Generate a random sequence, no consecutive repeats
+        // Shuffle into a random permutation (Fisher-Yates), no repeats
+        const shuffled = [...reachable];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        // If count > reachable, cycle through additional shuffled permutations
         const notes = [];
-        let lastNote = -1;
-        for (let i = 0; i < count; i++) {
-            let pick, attempts = 0;
-            do {
-                pick = reachable[Math.floor(Math.random() * reachable.length)];
-                attempts++;
-            } while (attempts < 5 && pick.note === lastNote);
-            lastNote = pick.note;
-            notes.push({
-                string: this._currentString,
-                fret: pick.fret,
-                note: pick.note,
-                noteName: chromaticToName(pick.note, g.notation, g.showSharps || !g.showFlats),
-            });
+        while (notes.length < count) {
+            const batch = [...shuffled];
+            // Re-shuffle for next cycle if needed
+            for (let i = batch.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [batch[i], batch[j]] = [batch[j], batch[i]];
+            }
+            // Avoid same note at boundary between cycles
+            if (notes.length > 0 && batch[0].note === notes[notes.length - 1].note && batch.length > 1) {
+                [batch[0], batch[1]] = [batch[1], batch[0]];
+            }
+            for (const pick of batch) {
+                if (notes.length >= count) break;
+                notes.push({
+                    string: this._currentString,
+                    fret: pick.fret,
+                    note: pick.note,
+                    noteName: chromaticToName(pick.note, g.notation, g.showSharps || !g.showFlats),
+                });
+            }
         }
         return notes;
     }
