@@ -344,6 +344,15 @@ body[data-orientation="horizontal"] #fretboard-container {
     color: var(--accent);
 }
 
+.chord-selected {
+    background: var(--accent-dim) !important;
+    color: #fff;
+}
+
+.chord-table tr:hover {
+    background: var(--bg-surface);
+}
+
 .pos-btn {
     white-space: nowrap;
 }

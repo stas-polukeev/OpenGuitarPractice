@@ -23,7 +23,7 @@ export default class FindTheNoteMode extends ModeBase {
         this.game.reset();
         this._tapHandler = (detail) => this._onTap(detail);
         eventBus.on('fretboard:tap', this._tapHandler);
-        await this._nextChallenge();
+        this._showStart();
     }
 
     deactivate() {
@@ -38,6 +38,21 @@ export default class FindTheNoteMode extends ModeBase {
         if (ui) ui.remove();
     }
 
+    _showStart() {
+        this.container.innerHTML = `
+            <div class="find-note-ui">
+                <div class="challenge-prompt">
+                    <span class="challenge-text">Find the Note</span>
+                    <div class="theory-desc" style="margin-top:8px">Find the requested note on the correct string.</div>
+                </div>
+                <button class="restart-btn" id="ftn-start">Start</button>
+            </div>`;
+        this.container.querySelector('#ftn-start').addEventListener('click', () => {
+            this.game.reset();
+            this._nextChallenge();
+        });
+    }
+
     async _nextChallenge() {
         this._animating = false;
         this._clearTimer();
@@ -47,7 +62,7 @@ export default class FindTheNoteMode extends ModeBase {
         if (this.game.gameOver || !challenge) {
             renderGameOver(this.container, this.game.score, this.game.total, () => {
                 this.game.reset();
-                this._nextChallenge();
+                this._showStart();
             });
             return;
         }
@@ -94,12 +109,26 @@ export default class FindTheNoteMode extends ModeBase {
             this._animating = true;
             this._clearTimer();
             showFeedback(this.fretboard, stringIndex, fret, true);
+
+            // Flash all octaves of this note on the fretboard
+            const tuning = (await import('../../theory/tunings.js')).getTuning(settings.global.tuning);
+            const targetNote = this.game._lastCorrectNote;
+            if (targetNote !== undefined) {
+                for (let s = 0; s < tuning.strings.length; s++) {
+                    for (let f = 0; f <= 12; f++) {
+                        if ((tuning.strings[s] + f) % 12 === targetNote && !(s === stringIndex && f === fret)) {
+                            this.fretboard.highlightFret(s, f, 'highlight-expected');
+                        }
+                    }
+                }
+            }
+
             renderResult(this.container, true);
 
             setTimeout(() => {
                 this._animating = false;
                 if (this.active) this._nextChallenge();
-            }, 1000);
+            }, 1200);
         } else {
             showFeedback(this.fretboard, stringIndex, fret, false);
             renderResult(this.container, false);
@@ -115,7 +144,7 @@ export default class FindTheNoteMode extends ModeBase {
     onSettingsChanged() {
         if (this.active) {
             this.game.reset();
-            this._nextChallenge();
+            this._showStart();
         }
     }
 }

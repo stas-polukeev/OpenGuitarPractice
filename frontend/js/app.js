@@ -13,6 +13,8 @@ let activeTheory = null;
 const PRACTICE_ITEMS = FRONTEND_MODES.filter(m => m.slug !== 'guitar-practice');
 const THEORY_TOPICS = [
     { slug: 'intervals', name: 'Intervals' },
+    { slug: 'chords', name: 'Chords' },
+    { slug: 'circle-of-fifths', name: 'Circle of Fifths' },
     { slug: 'minor-scale', name: 'Minor Scale' },
     { slug: 'major-scale', name: 'Major Scale' },
     { slug: 'minor-pentatonic', name: 'Minor Pentatonic' },
@@ -21,6 +23,8 @@ const THEORY_TOPICS = [
 
 const THEORY_LOADERS = {
     'intervals': () => import('./pages/theory-intervals.js'),
+    'chords': () => import('./pages/theory-chords.js'),
+    'circle-of-fifths': () => import('./pages/theory-circle.js'),
     'minor-scale': async () => { const m = await import('./pages/theory-scales.js'); return { default: class extends m.default { constructor() { super('natural-minor'); } } }; },
     'major-scale': async () => { const m = await import('./pages/theory-scales.js'); return { default: class extends m.default { constructor() { super('natural-major'); } } }; },
     'minor-pentatonic': async () => { const m = await import('./pages/theory-scales.js'); return { default: class extends m.default { constructor() { super('minor-pentatonic'); } } }; },

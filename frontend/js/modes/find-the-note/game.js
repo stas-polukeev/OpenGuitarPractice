@@ -16,6 +16,9 @@ export class GameState {
         this.total = 0;
         this.failedCurrent = false;
         this.gameOver = false;
+        this._lastCorrectNote = undefined;
+        this._lastStringIndex = -1;
+        this._lastNote = -1;
     }
 
     get notesPerGame() {
@@ -36,14 +39,26 @@ export class GameState {
             allowedNotes.push(1, 3, 6, 8, 10);
         }
 
-        this.currentChallenge = await createChallenge({
-            tuning: glob.tuning,
-            notation: glob.notation,
-            prefer_sharps: glob.showSharps || !glob.showFlats,
-            min_fret: mode.minFret,
-            max_fret: mode.maxFret,
-            allowed_notes: allowedNotes,
-        });
+        // Retry to avoid consecutive same string+note
+        let attempts = 0;
+        let challenge;
+        do {
+            challenge = await createChallenge({
+                tuning: glob.tuning,
+                notation: glob.notation,
+                prefer_sharps: glob.showSharps || !glob.showFlats,
+                min_fret: mode.minFret,
+                max_fret: mode.maxFret,
+                allowed_notes: allowedNotes,
+            });
+            attempts++;
+        } while (
+            attempts < 5 &&
+            challenge.string_index === this._lastStringIndex &&
+            challenge.chromatic_index === this._lastNote
+        );
+
+        this.currentChallenge = challenge;
         this.failedCurrent = false;
         return this.currentChallenge;
     }
@@ -57,6 +72,9 @@ export class GameState {
         const correct = actual === this.currentChallenge.chromatic_index;
 
         if (correct) {
+            this._lastCorrectNote = this.currentChallenge.chromatic_index;
+            this._lastStringIndex = this.currentChallenge.string_index;
+            this._lastNote = this.currentChallenge.chromatic_index;
             this.total++;
             if (!this.failedCurrent) {
                 this.score++;
