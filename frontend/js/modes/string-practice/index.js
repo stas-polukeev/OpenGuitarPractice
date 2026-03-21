@@ -42,7 +42,7 @@ export default class StringPracticeMode extends ModeBase {
         if (this.container) this.container.innerHTML = '';
     }
 
-    _ms() { return settings.getMode('string-practice'); }
+    _ms() { return settings.getMode(this.slug); }
 
     _allowedStrings() {
         const ms = this._ms();
@@ -115,7 +115,7 @@ export default class StringPracticeMode extends ModeBase {
                     <div class="theory-desc">${modeLabel}</div>
                     <div class="theory-desc">Strings in rotation: <strong>${strNames}</strong></div>
                 </div>
-                <button class="restart-btn" id="sp-start">Start</button>
+                <button class="restart-btn" id="strp-start">Start</button>
             </div>`;
         this.container.querySelector('#sp-start').addEventListener('click', () => this._startRound());
     }
