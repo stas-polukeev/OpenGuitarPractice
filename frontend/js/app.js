@@ -19,6 +19,7 @@ const MENU = {
             { slug: 'find-the-note', name: 'Find the Note' },
             { slug: 'interval-training', name: 'Intervals' },
             { slug: 'scale-practice', name: 'Scales' },
+            { slug: 'string-practice', name: 'String Practice' },
         ],
     },
     'guitar-practice': {
