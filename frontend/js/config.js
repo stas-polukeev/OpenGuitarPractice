@@ -37,6 +37,13 @@ export const DEFAULT_SETTINGS = {
         scaleRoot: 9,
         position: 1,
     },
+    'string-practice': {
+        minFret: 0,
+        maxFret: 12,
+        notesPerRound: 7,
+        noteTime: 5,
+        strings: [],
+    },
     'interval-training': {
         minFret: 0,
         maxFret: 12,

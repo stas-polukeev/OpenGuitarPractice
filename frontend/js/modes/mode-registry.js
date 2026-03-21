@@ -3,6 +3,7 @@ const MODE_MODULES = {
     'guitar-practice': () => import('./guitar-practice/index.js'),
     'interval-training': () => import('./interval-training/index.js'),
     'scale-practice': () => import('./scale-practice/index.js'),
+    'string-practice': () => import('./string-practice/index.js'),
 };
 
 const instances = {};
@@ -17,8 +18,9 @@ export async function getMode(slug) {
 }
 
 export const FRONTEND_MODES = [
-    { slug: 'find-the-note', name: 'Find the Note', description: 'Find notes on the fretboard' },
-    { slug: 'guitar-practice', name: 'Guitar Practice', description: 'Practice with your guitar' },
-    { slug: 'interval-training', name: 'Intervals', description: 'Learn intervals on the fretboard' },
-    { slug: 'scale-practice', name: 'Scales', description: 'Practice scales on the fretboard' },
+    { slug: 'find-the-note', name: 'Find the Note' },
+    { slug: 'interval-training', name: 'Intervals' },
+    { slug: 'scale-practice', name: 'Scales' },
+    { slug: 'guitar-practice', name: 'Random Notes' },
+    { slug: 'string-practice', name: 'String Practice' },
 ];

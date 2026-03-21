@@ -1,4 +1,4 @@
-const CACHE_NAME = 'guitar-v2';
+const CACHE_NAME = 'guitar-v3';
 
 const ASSETS = [
     '/',
@@ -31,6 +31,7 @@ const ASSETS = [
     '/js/modes/guitar-practice/index.js',
     '/js/modes/interval-training/index.js',
     '/js/modes/scale-practice/index.js',
+    '/js/modes/string-practice/index.js',
     '/js/pages/theory-intervals.js',
     '/js/pages/theory-scales.js',
     '/js/pages/theory-chords.js',

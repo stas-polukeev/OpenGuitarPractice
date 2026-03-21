@@ -301,6 +301,33 @@ export class SettingsPanel {
             this._bind('sm-semi', 'change', (e) => settings.setMode(slug, 'maxSemitones', parseInt(e.target.value, 10)));
             this._bind('sm-notes', 'change', (e) => settings.setMode(slug, 'notesPerGame', parseInt(e.target.value, 10)));
             this._bindStringFilter(mc, slug);
+
+        } else if (slug === 'string-practice') {
+            const ms = settings.getMode(slug);
+            mc.innerHTML = `
+                <h4>String Practice</h4>
+                ${this._stringFilterHTML(slug)}
+                <div class="settings-group">
+                    <label for="sm-min">Min fret</label>
+                    <input type="number" id="sm-min" min="0" max="24" value="${ms.minFret ?? 0}">
+                </div>
+                <div class="settings-group">
+                    <label for="sm-max">Max fret</label>
+                    <input type="number" id="sm-max" min="0" max="24" value="${ms.maxFret ?? 12}">
+                </div>
+                <div class="settings-group">
+                    <label for="sm-notes">Notes per round</label>
+                    <input type="number" id="sm-notes" min="1" max="20" value="${ms.notesPerRound ?? 7}">
+                </div>
+                <div class="settings-group">
+                    <label for="sm-notetime">Seconds per note (guitar mode)</label>
+                    <input type="number" id="sm-notetime" min="1" max="30" value="${ms.noteTime ?? 5}">
+                </div>`;
+            this._bind('sm-min', 'change', (e) => settings.setMode(slug, 'minFret', parseInt(e.target.value, 10)));
+            this._bind('sm-max', 'change', (e) => settings.setMode(slug, 'maxFret', parseInt(e.target.value, 10)));
+            this._bind('sm-notes', 'change', (e) => settings.setMode(slug, 'notesPerRound', parseInt(e.target.value, 10)));
+            this._bind('sm-notetime', 'change', (e) => settings.setMode(slug, 'noteTime', parseInt(e.target.value, 10)));
+            this._bindStringFilter(mc, slug);
         } else {
             mc.innerHTML = '';
         }

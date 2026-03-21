@@ -2,7 +2,7 @@ import { FretboardSVG } from './components/fretboard-svg.js';
 import { SettingsPanel } from './components/settings-panel.js';
 import { settings } from './services/settings.js';
 import { eventBus } from './services/events.js';
-import { getMode, FRONTEND_MODES } from './modes/mode-registry.js';
+import { getMode } from './modes/mode-registry.js';
 import { setTone } from './services/audio.js';
 
 let fretboard = null;
@@ -10,16 +10,37 @@ let settingsPanel = null;
 let activeMode = null;
 let activeTheory = null;
 
-const PRACTICE_ITEMS = FRONTEND_MODES.filter(m => m.slug !== 'guitar-practice');
-const THEORY_TOPICS = [
-    { slug: 'intervals', name: 'Intervals' },
-    { slug: 'chords', name: 'Chords' },
-    { slug: 'circle-of-fifths', name: 'Circle of Fifths' },
-    { slug: 'minor-scale', name: 'Minor Scale' },
-    { slug: 'major-scale', name: 'Major Scale' },
-    { slug: 'minor-pentatonic', name: 'Minor Pentatonic' },
-    { slug: 'major-pentatonic', name: 'Major Pentatonic' },
-];
+// --- Menu structure ---
+
+const MENU = {
+    practice: {
+        label: 'Practice',
+        items: [
+            { slug: 'find-the-note', name: 'Find the Note' },
+            { slug: 'interval-training', name: 'Intervals' },
+            { slug: 'scale-practice', name: 'Scales' },
+        ],
+    },
+    'guitar-practice': {
+        label: 'Guitar Practice',
+        items: [
+            { slug: 'guitar-practice', name: 'Random Notes' },
+            { slug: 'string-practice', name: 'String Practice' },
+        ],
+    },
+    theory: {
+        label: 'Theory',
+        items: [
+            { slug: 'intervals', name: 'Intervals' },
+            { slug: 'chords', name: 'Chords' },
+            { slug: 'circle-of-fifths', name: 'Circle of Fifths' },
+            { slug: 'minor-scale', name: 'Minor Scale' },
+            { slug: 'major-scale', name: 'Major Scale' },
+            { slug: 'minor-pentatonic', name: 'Minor Pentatonic' },
+            { slug: 'major-pentatonic', name: 'Major Pentatonic' },
+        ],
+    },
+};
 
 const THEORY_LOADERS = {
     'intervals': () => import('./pages/theory-intervals.js'),
@@ -74,36 +95,28 @@ function rebuildFretboard() {
 function showMainMenu() {
     deactivateAll();
     const nav = document.getElementById('main-nav');
-    nav.innerHTML = `
-        <button class="menu-item" data-cat="practice">Practice</button>
-        <button class="menu-item" data-cat="guitar-practice">Guitar Practice</button>
-        <button class="menu-item" data-cat="theory">Theory</button>
-    `;
+    nav.innerHTML = Object.entries(MENU).map(([key, cat]) =>
+        `<button class="menu-item" data-cat="${key}">${cat.label}</button>`
+    ).join('');
+
     nav.querySelectorAll('.menu-item').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const cat = btn.dataset.cat;
-            if (cat === 'guitar-practice') {
-                activateExercise('guitar-practice');
-                showBreadcrumb('Guitar Practice');
-            } else {
-                showSubmenu(cat);
-            }
-        });
+        btn.addEventListener('click', () => showSubmenu(btn.dataset.cat));
     });
     document.getElementById('content-area').innerHTML = '';
     document.getElementById('fretboard-container').innerHTML = '';
 }
 
 function showSubmenu(category) {
-    const nav = document.getElementById('main-nav');
-    const items = category === 'practice' ? PRACTICE_ITEMS : THEORY_TOPICS;
-    const label = category === 'practice' ? 'Practice' : 'Theory';
+    const cat = MENU[category];
+    if (!cat) return;
+    const isTheory = category === 'theory';
 
+    const nav = document.getElementById('main-nav');
     nav.innerHTML = `
         <button class="menu-back">&larr; Back</button>
-        <span class="menu-label">${label}</span>
-        ${items.map(item =>
-            `<button class="menu-item" data-slug="${item.slug}" data-type="${category}">${item.name}</button>`
+        <span class="menu-label">${cat.label}</span>
+        ${cat.items.map(item =>
+            `<button class="menu-item" data-slug="${item.slug}" data-theory="${isTheory}">${item.name}</button>`
         ).join('')}
     `;
 
@@ -111,10 +124,10 @@ function showSubmenu(category) {
     nav.querySelectorAll('.menu-item').forEach(btn => {
         btn.addEventListener('click', () => {
             const slug = btn.dataset.slug;
-            if (btn.dataset.type === 'practice') {
-                activateExercise(slug);
-            } else {
+            if (btn.dataset.theory === 'true') {
                 activateTheory(slug);
+            } else {
+                activateExercise(slug);
             }
             showBreadcrumb(btn.textContent);
         });
@@ -152,7 +165,7 @@ async function activateExercise(slug) {
 
 function switchToExercise(slug) {
     activateExercise(slug);
-    showBreadcrumb(FRONTEND_MODES.find(m => m.slug === slug)?.name || slug);
+    showBreadcrumb(slug);
 }
 
 async function activateTheory(slug) {
