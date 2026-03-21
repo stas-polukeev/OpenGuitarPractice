@@ -24,10 +24,12 @@ function generateChallengeLocal(data) {
     const minFret = data.min_fret ?? 0;
     const maxFret = data.max_fret ?? 12;
     const allowed = new Set(data.allowed_notes ?? NATURAL_NOTE_INDICES);
+    const strings = data.strings; // optional string filter array
 
     // Build valid (string, note) pairs reachable in fret range
     const pairs = [];
     for (let s = 0; s < tuning.strings.length; s++) {
+        if (strings && strings.length > 0 && !strings.includes(s)) continue;
         const reachable = new Set();
         for (let f = minFret; f <= maxFret; f++) {
             const n = noteAt(s, f, tuning);

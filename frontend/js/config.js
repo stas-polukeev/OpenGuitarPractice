@@ -19,6 +19,7 @@ export const DEFAULT_SETTINGS = {
         notesPerGame: 10,
         timerEnabled: false,
         timerSeconds: 5,
+        strings: [], // empty = all strings
     },
     'guitar-practice': {
         minFret: 0,
@@ -29,6 +30,7 @@ export const DEFAULT_SETTINGS = {
         scaleKey: 'minor-pentatonic',
         scaleRoot: 9,
         scaleStep: 1,
+        strings: [],
     },
     'scale-practice': {
         scaleKey: 'minor-pentatonic',
@@ -40,6 +42,7 @@ export const DEFAULT_SETTINGS = {
         maxFret: 12,
         maxSemitones: 12,
         notesPerGame: 10,
+        strings: [],
     },
 };
 

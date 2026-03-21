@@ -109,6 +109,38 @@ export class SettingsPanel {
         if (el) el.addEventListener(evt, fn);
     }
 
+    _stringFilterHTML(slug) {
+        const g = settings.global;
+        const tuning = getTuning(g.tuning);
+        const ms = settings.getMode(slug);
+        const selected = ms.strings || [];
+        const allSelected = selected.length === 0;
+        return `
+            <div class="settings-group">
+                <label>Strings</label>
+                <div class="string-filter" style="display:flex;gap:6px;flex-wrap:wrap">
+                    ${tuning.stringNames.map((name, i) => {
+                        const num = tuning.strings.length - i;
+                        const label = g.stringLabels === 'numbers' ? num : name;
+                        const checked = allSelected || selected.includes(i);
+                        return `<label style="font-size:0.8rem"><input type="checkbox" class="sm-string-cb" data-idx="${i}" ${checked ? 'checked' : ''}> ${label}</label>`;
+                    }).join('')}
+                </div>
+            </div>`;
+    }
+
+    _bindStringFilter(mc, slug) {
+        mc.querySelectorAll('.sm-string-cb').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checked = [...mc.querySelectorAll('.sm-string-cb:checked')].map(c => +c.dataset.idx);
+                const tuning = getTuning(settings.global.tuning);
+                // If all checked, store empty array (= all)
+                const val = checked.length === tuning.strings.length ? [] : checked;
+                settings.setMode(slug, 'strings', val);
+            });
+        });
+    }
+
     showModeSettings(slug) {
         this.modeSlug = slug;
         const mc = this.container.querySelector('#mode-settings');
@@ -118,6 +150,7 @@ export class SettingsPanel {
             const ms = settings.getMode(slug);
             mc.innerHTML = `
                 <h4>Find the Note</h4>
+                ${this._stringFilterHTML(slug)}
                 <div class="settings-group">
                     <label for="sm-min">Min fret</label>
                     <input type="number" id="sm-min" min="0" max="24" value="${ms.minFret}">
@@ -148,11 +181,13 @@ export class SettingsPanel {
                 if (secGroup) secGroup.style.display = e.target.checked ? '' : 'none';
             });
             this._bind('sm-timer-sec', 'change', (e) => settings.setMode(slug, 'timerSeconds', parseInt(e.target.value, 10)));
+            this._bindStringFilter(mc, slug);
         } else if (slug === 'guitar-practice') {
             const ms = settings.getMode(slug);
             const mode = ms.practiceMode || 'random';
             mc.innerHTML = `
                 <h4>Guitar Practice</h4>
+                ${this._stringFilterHTML(slug)}
                 <div class="settings-group">
                     <label for="sm-mode">Mode</label>
                     <select id="sm-mode">
@@ -201,6 +236,7 @@ export class SettingsPanel {
             this._bind('sm-max', 'change', (e) => settings.setMode(slug, 'maxFret', parseInt(e.target.value, 10)));
             this._bind('sm-notetime', 'change', (e) => settings.setMode(slug, 'noteTime', parseInt(e.target.value, 10)));
             this._bind('sm-count', 'change', (e) => settings.setMode(slug, 'notesPerSession', parseInt(e.target.value, 10)));
+            this._bindStringFilter(mc, slug);
 
         } else if (slug === 'scale-practice') {
             const ms = settings.getMode(slug);
@@ -243,6 +279,7 @@ export class SettingsPanel {
             const ms = settings.getMode(slug);
             mc.innerHTML = `
                 <h4>Interval Training</h4>
+                ${this._stringFilterHTML(slug)}
                 <div class="settings-group">
                     <label for="sm-min">Min fret</label>
                     <input type="number" id="sm-min" min="0" max="24" value="${ms.minFret ?? 0}">
@@ -263,6 +300,7 @@ export class SettingsPanel {
             this._bind('sm-max', 'change', (e) => settings.setMode(slug, 'maxFret', parseInt(e.target.value, 10)));
             this._bind('sm-semi', 'change', (e) => settings.setMode(slug, 'maxSemitones', parseInt(e.target.value, 10)));
             this._bind('sm-notes', 'change', (e) => settings.setMode(slug, 'notesPerGame', parseInt(e.target.value, 10)));
+            this._bindStringFilter(mc, slug);
         } else {
             mc.innerHTML = '';
         }

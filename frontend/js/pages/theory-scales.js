@@ -1,5 +1,5 @@
 import { SCALES, getScaleNotes, getScalePositions, get3NPS } from '../theory/scales.js';
-import { NOTATION_SYSTEMS } from '../theory/notes.js';
+import { chromaticToName, NOTATION_SYSTEMS } from '../theory/notes.js';
 import { getTuning } from '../theory/tunings.js';
 import { settings } from '../services/settings.js';
 
@@ -9,6 +9,7 @@ export default class ScalesTheory {
         this.root = SCALES[scaleKey]?.defaultRoot ?? 9;
         this.selectedPosition = 0; // 0 = all
         this.viewMode = 'positions'; // 'positions' or '3nps'
+        this.labelMode = 'degrees'; // 'degrees' or 'notes'
         this.container = null;
         this.fretboard = null;
         this.onExercise = null;
@@ -50,6 +51,12 @@ export default class ScalesTheory {
                         ${notes.map((n, i) => `<option value="${i}" ${i === this.root ? 'selected' : ''}>${n}</option>`).join('')}
                     </select>
                 </label>
+                <label>Labels:
+                    <select id="ts-labels">
+                        <option value="degrees" ${this.labelMode === 'degrees' ? 'selected' : ''}>Degrees (1-7)</option>
+                        <option value="notes" ${this.labelMode === 'notes' ? 'selected' : ''}>Note names</option>
+                    </select>
+                </label>
                 ${has3NPS ? `
                 <label>View:
                     <select id="ts-view">
@@ -69,6 +76,10 @@ export default class ScalesTheory {
             <button class="practice-link" id="ts-practice">Practice this scale</button>
         </div>`;
 
+        this._bind('#ts-labels', 'change', e => {
+            this.labelMode = e.target.value;
+            this._show();
+        });
         this._bind('#ts-root', 'change', e => {
             this.root = +e.target.value;
             this.selectedPosition = 0;
@@ -99,6 +110,14 @@ export default class ScalesTheory {
         if (el) el.addEventListener(evt, fn);
     }
 
+    _label(n) {
+        if (this.labelMode === 'notes') {
+            const g = settings.global;
+            return chromaticToName(n.note, g.notation || 'english', g.showSharps || !g.showFlats);
+        }
+        return n.degree;
+    }
+
     _show() {
         this.fretboard.clearHighlights();
         const tuning = getTuning(settings.global.tuning);
@@ -109,13 +128,12 @@ export default class ScalesTheory {
         }
 
         if (this.selectedPosition === 0) {
-            // Show all notes across the fretboard
             const maxFret = this._neededMaxFret(tuning);
             this._ensureFretRange(maxFret);
             const allNotes = getScaleNotes(this.root, this.scaleKey, tuning, maxFret);
             for (const n of allNotes) {
                 this.fretboard.highlightFret(n.string, n.fret,
-                    n.isRoot ? 'highlight-correct' : 'highlight-expected', n.degree);
+                    n.isRoot ? 'highlight-correct' : 'highlight-expected', this._label(n));
             }
         } else {
             const positions = getScalePositions(this.root, this.scaleKey, tuning, 24);
@@ -124,7 +142,7 @@ export default class ScalesTheory {
                 this._ensureFretRange(pos.maxFret);
                 for (const n of pos.notes) {
                     this.fretboard.highlightFret(n.string, n.fret,
-                        n.isRoot ? 'highlight-correct' : 'highlight-expected', n.degree);
+                        n.isRoot ? 'highlight-correct' : 'highlight-expected', this._label(n));
                 }
             }
         }
@@ -138,7 +156,7 @@ export default class ScalesTheory {
         this._ensureFretRange(maxF);
         for (const n of notes) {
             this.fretboard.highlightFret(n.string, n.fret,
-                n.isRoot ? 'highlight-correct' : 'highlight-expected', n.degree);
+                n.isRoot ? 'highlight-correct' : 'highlight-expected', this._label(n));
         }
     }
 

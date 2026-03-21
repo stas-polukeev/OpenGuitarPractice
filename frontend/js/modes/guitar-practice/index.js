@@ -47,22 +47,33 @@ export default class GuitarPracticeMode extends ModeBase {
             return this._generateScaleNotes(tuning, ms, count);
         }
 
-        // Random notes
+        // Random notes with string filter and no consecutive repeats
         let allowed = [...NATURAL_NOTE_INDICES];
         if (g.showSharps || g.showFlats) allowed.push(1, 3, 6, 8, 10);
 
+        const strings = (ms.strings && ms.strings.length > 0)
+            ? ms.strings
+            : Array.from({ length: tuning.strings.length }, (_, i) => i);
+
         const notes = [];
+        let lastStr = -1, lastNote = -1;
         for (let i = 0; i < count; i++) {
-            const si = Math.floor(Math.random() * tuning.strings.length);
-            const reachable = [];
-            for (let f = minFret; f <= maxFret; f++) {
-                const n = noteAt(si, f, tuning);
-                if (allowed.includes(n) && !reachable.some(r => r.note === n)) {
-                    reachable.push({ fret: f, note: n });
+            let si, pick, attempts = 0;
+            do {
+                si = strings[Math.floor(Math.random() * strings.length)];
+                const reachable = [];
+                for (let f = minFret; f <= maxFret; f++) {
+                    const n = noteAt(si, f, tuning);
+                    if (allowed.includes(n) && !reachable.some(r => r.note === n)) {
+                        reachable.push({ fret: f, note: n });
+                    }
                 }
-            }
-            if (reachable.length === 0) continue;
-            const pick = reachable[Math.floor(Math.random() * reachable.length)];
+                if (reachable.length === 0) { pick = null; break; }
+                pick = reachable[Math.floor(Math.random() * reachable.length)];
+                attempts++;
+            } while (attempts < 5 && si === lastStr && pick && pick.note === lastNote);
+            if (!pick) continue;
+            lastStr = si; lastNote = pick.note;
             notes.push({
                 string: si,
                 stringName: tuning.stringNames[si],

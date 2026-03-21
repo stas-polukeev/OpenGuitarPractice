@@ -39,6 +39,9 @@ export class GameState {
             allowedNotes.push(1, 3, 6, 8, 10);
         }
 
+        // String filter
+        const strings = (mode.strings && mode.strings.length > 0) ? mode.strings : undefined;
+
         // Retry to avoid consecutive same string+note
         let attempts = 0;
         let challenge;
@@ -50,6 +53,7 @@ export class GameState {
                 min_fret: mode.minFret,
                 max_fret: mode.maxFret,
                 allowed_notes: allowedNotes,
+                strings,
             });
             attempts++;
         } while (
