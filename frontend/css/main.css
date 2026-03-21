@@ -52,6 +52,13 @@ header h1 {
     color: var(--accent);
 }
 
+.version {
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
 #settings-toggle {
     background: var(--bg-card);
     border: 1px solid var(--accent-dim);
