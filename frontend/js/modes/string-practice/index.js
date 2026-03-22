@@ -19,7 +19,6 @@ export default class StringPracticeMode extends ModeBase {
         this._failed = false;
         this._animating = false;
         this._startTime = 0;
-        // slug determines mode: 'string-practice-auto' = guitar mode
         this._isGuitarMode = slug === 'string-practice-auto';
         this._timeout = null;
     }
@@ -67,7 +66,6 @@ export default class StringPracticeMode extends ModeBase {
         let allowed = [...NATURAL_NOTE_INDICES];
         if (g.showSharps || g.showFlats) allowed.push(1, 3, 6, 8, 10);
 
-        // Find all reachable notes on the current string
         const reachable = [];
         for (let f = minFret; f <= maxFret; f++) {
             const n = noteAt(this._currentString, f, tuning);
@@ -78,23 +76,20 @@ export default class StringPracticeMode extends ModeBase {
 
         if (reachable.length === 0) return [];
 
-        // Shuffle into a random permutation (Fisher-Yates), no repeats
+        // Fisher-Yates permutation, no repeats
         const shuffled = [...reachable];
         for (let i = shuffled.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
         }
 
-        // If count > reachable, cycle through additional shuffled permutations
         const notes = [];
         while (notes.length < count) {
             const batch = [...shuffled];
-            // Re-shuffle for next cycle if needed
             for (let i = batch.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [batch[i], batch[j]] = [batch[j], batch[i]];
             }
-            // Avoid same note at boundary between cycles
             if (notes.length > 0 && batch[0].note === notes[notes.length - 1].note && batch.length > 1) {
                 [batch[0], batch[1]] = [batch[1], batch[0]];
             }
@@ -119,7 +114,9 @@ export default class StringPracticeMode extends ModeBase {
             g.stringLabels === 'numbers' ? (tuning.strings.length - s) : tuning.stringNames[s]
         ).join(', ');
 
-        const modeLabel = this._isGuitarMode ? 'Guitar mode — notes auto-advance on a timer.' : 'Tap each note on the fretboard to advance.';
+        const modeLabel = this._isGuitarMode
+            ? 'Guitar mode — notes auto-advance on a timer.'
+            : 'Tap each note on the fretboard to advance.';
         this.container.innerHTML = `
             <div class="find-note-ui">
                 <div class="challenge-prompt">
@@ -142,10 +139,18 @@ export default class StringPracticeMode extends ModeBase {
             this.container.innerHTML = '<div class="find-note-ui"><p>No notes available. Check fret range and settings.</p></div>';
             return;
         }
-        this._showCurrentNote();
+        this._showSequence();
     }
 
-    _showCurrentNote() {
+    _getStringLabel() {
+        const g = settings.global;
+        const tuning = getTuning(g.tuning);
+        return g.stringLabels === 'numbers'
+            ? `string ${tuning.strings.length - this._currentString}`
+            : `the ${tuning.stringNames[this._currentString]} string`;
+    }
+
+    _showSequence() {
         this.fretboard.clearHighlights();
         this._animating = false;
         if (this._timeout) { clearTimeout(this._timeout); this._timeout = null; }
@@ -155,40 +160,57 @@ export default class StringPracticeMode extends ModeBase {
             return;
         }
 
-        const n = this._notes[this._currentIdx];
-        const g = settings.global;
-        const tuning = getTuning(g.tuning);
-        const strLabel = g.stringLabels === 'numbers'
-            ? `string ${tuning.strings.length - n.string}`
-            : `the ${tuning.stringNames[n.string]} string`;
+        // Render the full note sequence with current highlighted
+        const seqHTML = this._notes.map((n, i) => {
+            let cls = 'seq-note';
+            if (i < this._currentIdx) cls += ' seq-done';
+            if (i === this._currentIdx) cls += ' seq-current';
+            return `<span class="${cls}">${n.noteName}</span>`;
+        }).join(' ');
 
         this.container.innerHTML = `
             <div class="find-note-ui">
                 <div class="challenge-prompt" id="strp-prompt">
-                    <span class="challenge-text">Find <strong>${n.noteName}</strong> on ${strLabel}</span>
+                    <div class="theory-desc" style="margin-bottom:4px">On ${this._getStringLabel()}</div>
+                    <div class="seq-line">${seqHTML}</div>
                 </div>
                 <div class="score-display">
                     <span class="progress">${this._currentIdx + 1} / ${this._notes.length}</span>
+                    <button class="seq-skip" id="strp-skip">Next round</button>
                 </div>
             </div>`;
+
+        this.container.querySelector('#strp-skip').addEventListener('click', () => {
+            if (this._timeout) { clearTimeout(this._timeout); this._timeout = null; }
+            this._startRound();
+        });
 
         this._startTime = Date.now();
 
         if (this._isGuitarMode) {
             const ms = this._ms();
             const noteTime = (ms.noteTime ?? 5) * 1000;
-            this._timeout = setTimeout(() => {
-                if (!this.active) return;
-                this.fretboard.highlightFret(n.string, n.fret, 'highlight-correct');
-                if (g.soundEnabled) playNote(n.string, n.fret);
-                const prompt = this.container.querySelector('#strp-prompt');
-                if (prompt) prompt.classList.add('result-correct');
-                this._currentIdx++;
-                this._timeout = setTimeout(() => {
-                    if (this.active) this._showCurrentNote();
-                }, 1200);
-            }, noteTime);
+            this._timeout = setTimeout(() => this._revealCurrent(), noteTime);
         }
+    }
+
+    _revealCurrent() {
+        if (!this.active || this._currentIdx >= this._notes.length) return;
+        const n = this._notes[this._currentIdx];
+        const g = settings.global;
+
+        this.fretboard.clearHighlights();
+        this.fretboard.highlightFret(n.string, n.fret, 'highlight-correct');
+        if (g.soundEnabled) playNote(n.string, n.fret);
+
+        // Mark current as done in the sequence display
+        const currentEl = this.container.querySelector('.seq-current');
+        if (currentEl) { currentEl.classList.remove('seq-current'); currentEl.classList.add('seq-done'); }
+
+        this._currentIdx++;
+        this._timeout = setTimeout(() => {
+            if (this.active) this._showSequence();
+        }, 1200);
     }
 
     _onTap({ stringIndex, fret }) {
@@ -205,22 +227,18 @@ export default class StringPracticeMode extends ModeBase {
             recordResult(stringIndex, target.note, !this._failed, responseMs);
             this.fretboard.clearHighlights();
             this.fretboard.highlightFret(stringIndex, fret, 'highlight-correct');
-            const prompt = this.container.querySelector('#strp-prompt');
-            if (prompt) prompt.classList.add('result-correct');
+
             this._currentIdx++;
             this._failed = false;
             setTimeout(() => {
-                if (this.active) this._showCurrentNote();
-            }, 600);
+                if (this.active) this._showSequence();
+            }, 400);
         } else {
             this._failed = true;
             this.fretboard.clearHighlights();
             this.fretboard.highlightFret(stringIndex, fret, 'highlight-wrong');
-            const prompt = this.container.querySelector('#strp-prompt');
-            if (prompt) prompt.classList.add('result-wrong');
             setTimeout(() => {
                 this.fretboard.clearHighlights();
-                if (prompt) prompt.classList.remove('result-wrong');
             }, 400);
         }
     }

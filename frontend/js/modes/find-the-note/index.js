@@ -111,20 +111,21 @@ export default class FindTheNoteMode extends ModeBase {
             showFeedback(this.fretboard, stringIndex, fret, true);
 
             // Flash notes on the fretboard based on flashMode setting
-            const tuning = (await import('../../theory/tunings.js')).getTuning(settings.global.tuning);
             const mode = settings.getMode('find-the-note');
             const flashMode = mode.flashMode || 'octaves';
-            const targetNote = this.game._lastCorrectNote;
-            const { NATURAL_NOTE_INDICES: naturals } = await import('../../theory/notes.js');
-
-            for (let s = 0; s < tuning.strings.length; s++) {
-                for (let f = 0; f <= 12; f++) {
-                    if (s === stringIndex && f === fret) continue;
-                    const n = (tuning.strings[s] + f) % 12;
-                    if (flashMode === 'all-natural' && naturals.includes(n)) {
-                        this.fretboard.highlightFret(s, f, 'highlight-expected');
-                    } else if (flashMode === 'octaves' && targetNote !== undefined && n === targetNote) {
-                        this.fretboard.highlightFret(s, f, 'highlight-expected');
+            if (flashMode !== 'off') {
+                const tuning = (await import('../../theory/tunings.js')).getTuning(settings.global.tuning);
+                const targetNote = this.game._lastCorrectNote;
+                const { NATURAL_NOTE_INDICES: naturals } = await import('../../theory/notes.js');
+                for (let s = 0; s < tuning.strings.length; s++) {
+                    for (let f = 0; f <= 12; f++) {
+                        if (s === stringIndex && f === fret) continue;
+                        const n = (tuning.strings[s] + f) % 12;
+                        if (flashMode === 'all-natural' && naturals.includes(n)) {
+                            this.fretboard.highlightFret(s, f, 'highlight-expected');
+                        } else if (flashMode === 'octaves' && targetNote !== undefined && n === targetNote) {
+                            this.fretboard.highlightFret(s, f, 'highlight-expected');
+                        }
                     }
                 }
             }

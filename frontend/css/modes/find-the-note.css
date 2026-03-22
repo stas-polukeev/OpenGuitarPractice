@@ -126,3 +126,52 @@
 .restart-btn:hover {
     background: var(--accent);
 }
+
+/* Note sequence display for string practice */
+.seq-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin: 8px 0;
+}
+
+.seq-note {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: var(--bg-surface);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+.seq-note.seq-current {
+    background: var(--accent-dim);
+    color: #fff;
+    border-color: var(--accent);
+    font-size: 1.15rem;
+}
+
+.seq-note.seq-done {
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--correct);
+    border-color: var(--correct);
+}
+
+.seq-skip {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 4px 12px;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: var(--font);
+}
+
+.seq-skip:hover {
+    background: var(--bg-card);
+    color: var(--text);
+}

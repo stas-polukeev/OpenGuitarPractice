@@ -166,6 +166,7 @@ export class SettingsPanel {
                 <div class="settings-group">
                     <label for="sm-flash">On correct, flash</label>
                     <select id="sm-flash">
+                        <option value="off" ${ms.flashMode === 'off' ? 'selected' : ''}>Off</option>
                         <option value="octaves" ${(ms.flashMode || 'octaves') === 'octaves' ? 'selected' : ''}>Same note (octaves)</option>
                         <option value="all-natural" ${ms.flashMode === 'all-natural' ? 'selected' : ''}>All natural notes</option>
                     </select>
