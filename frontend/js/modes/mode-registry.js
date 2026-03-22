@@ -5,6 +5,7 @@ const MODE_MODULES = {
     'scale-practice': () => import('./scale-practice/index.js'),
     'string-practice': () => import('./string-practice/index.js'),
     'string-practice-auto': () => import('./string-practice/index.js'),
+    'find-all-notes': () => import('./find-all-notes/index.js'),
 };
 
 const instances = {};

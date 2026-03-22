@@ -52,6 +52,13 @@ export const DEFAULT_SETTINGS = {
         noteTime: 5,
         strings: [],
     },
+    'find-all-notes': {
+        minFret: 0,
+        maxFret: 12,
+        rounds: 5,
+        timerEnabled: false,
+        timerSeconds: 15,
+    },
     'interval-training': {
         minFret: 0,
         maxFret: 12,

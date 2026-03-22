@@ -337,6 +337,39 @@ export class SettingsPanel {
             this._bind('sm-notes', 'change', (e) => settings.setMode(slug, 'notesPerRound', parseInt(e.target.value, 10)));
             this._bind('sm-notetime', 'change', (e) => settings.setMode(slug, 'noteTime', parseInt(e.target.value, 10)));
             this._bindStringFilter(mc, slug);
+
+        } else if (slug === 'find-all-notes') {
+            const ms = settings.getMode(slug);
+            mc.innerHTML = `
+                <h4>Find All Notes</h4>
+                <div class="settings-group">
+                    <label for="sm-min">Min fret</label>
+                    <input type="number" id="sm-min" min="0" max="24" value="${ms.minFret ?? 0}">
+                </div>
+                <div class="settings-group">
+                    <label for="sm-max">Max fret</label>
+                    <input type="number" id="sm-max" min="0" max="24" value="${ms.maxFret ?? 12}">
+                </div>
+                <div class="settings-group">
+                    <label for="sm-rounds">Rounds</label>
+                    <input type="number" id="sm-rounds" min="1" max="20" value="${ms.rounds ?? 5}">
+                </div>
+                <div class="settings-group">
+                    <label><input type="checkbox" id="sm-timer" ${ms.timerEnabled ? 'checked' : ''}> Timer</label>
+                </div>
+                <div class="settings-group" id="sm-timer-sec-group" style="${ms.timerEnabled ? '' : 'display:none'}">
+                    <label for="sm-timer-sec">Seconds per round</label>
+                    <input type="number" id="sm-timer-sec" min="3" max="60" value="${ms.timerSeconds ?? 15}">
+                </div>`;
+            this._bind('sm-min', 'change', (e) => settings.setMode(slug, 'minFret', parseInt(e.target.value, 10)));
+            this._bind('sm-max', 'change', (e) => settings.setMode(slug, 'maxFret', parseInt(e.target.value, 10)));
+            this._bind('sm-rounds', 'change', (e) => settings.setMode(slug, 'rounds', parseInt(e.target.value, 10)));
+            this._bind('sm-timer', 'change', (e) => {
+                settings.setMode(slug, 'timerEnabled', e.target.checked);
+                const g = mc.querySelector('#sm-timer-sec-group');
+                if (g) g.style.display = e.target.checked ? '' : 'none';
+            });
+            this._bind('sm-timer-sec', 'change', (e) => settings.setMode(slug, 'timerSeconds', parseInt(e.target.value, 10)));
         } else {
             mc.innerHTML = '';
         }

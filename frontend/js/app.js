@@ -20,6 +20,7 @@ const MENU = {
             { slug: 'interval-training', name: 'Intervals' },
             { slug: 'scale-practice', name: 'Scales' },
             { slug: 'string-practice', name: 'String Practice' },
+            { slug: 'find-all-notes', name: 'Find All Notes' },
         ],
     },
     'guitar-practice': {
