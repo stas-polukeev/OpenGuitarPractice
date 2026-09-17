@@ -6,5 +6,11 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+.DS_Store
+*.xcuserstate
+xcuserdata/
+# Local SSH material accidentally created during device/server setup.
+yes
+yes.pub
 .pytest_cache/
 .mypy_cache/

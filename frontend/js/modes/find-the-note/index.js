@@ -60,6 +60,7 @@ export default class FindTheNoteMode extends ModeBase {
 
         const challenge = await this.game.newChallenge();
         if (this.game.gameOver || !challenge) {
+            eventBus.emit('practice:complete', { skillId: this.slug, title: 'Find the note', correct: this.game.score, total: this.game.total, minutes: 4, mastery: this.game.score / Math.max(1, this.game.total) });
             renderGameOver(this.container, this.game.score, this.game.total, () => {
                 this.game.reset();
                 this._showStart();

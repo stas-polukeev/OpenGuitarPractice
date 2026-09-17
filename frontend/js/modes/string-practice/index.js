@@ -245,6 +245,7 @@ export default class StringPracticeMode extends ModeBase {
 
     _showDone() {
         this.fretboard.clearHighlights();
+        eventBus.emit('practice:complete', { skillId: this.slug, title: 'One-string notes', correct: this._notes.length, total: this._notes.length, minutes: 4, mastery: this._failed ? 0.65 : 0.85 });
         this.container.innerHTML = `
             <div class="find-note-ui">
                 <div class="game-over">

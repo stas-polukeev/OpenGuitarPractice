@@ -5,6 +5,7 @@ import { chromaticToName, NATURAL_NOTE_INDICES } from '../../theory/notes.js';
 import { noteAt } from '../../theory/fretboard.js';
 import { playNote } from '../../services/audio.js';
 import { SCALES, getScaleNotes } from '../../theory/scales.js';
+import { eventBus } from '../../services/events.js';
 
 export default class GuitarPracticeMode extends ModeBase {
     constructor(slug) {
@@ -186,6 +187,7 @@ export default class GuitarPracticeMode extends ModeBase {
 
     _showDone() {
         this.fretboard.clearHighlights();
+        eventBus.emit('practice:complete', { skillId: this.slug, title: 'Random notes', correct: this._notes.length, total: this._notes.length, minutes: 5, mastery: 0.6 });
         this.container.innerHTML = `
             <div class="find-note-ui">
                 <div class="game-over">

@@ -65,7 +65,21 @@ const MODE_MODULES = {
 };
 ```
 
-4. Optionally add CSS at `frontend/css/modes/your-mode-name.css` and link it in `index.html`.
+4. Add the mode metadata to `PRACTICE_CATALOG` in `frontend/js/app.js` so it appears in Practice and can participate in learning paths.
+
+5. Prefer shared styles in `frontend/css/main.css`. If the mode needs a separate stylesheet, add it to `index.html` and `frontend/sw.js`.
+
+6. Dispatch `practice:complete` with the mode slug, correctness, and optional XP when a meaningful challenge is completed:
+
+```javascript
+this.eventBus.emit('practice:complete', {
+    mode: 'your-mode-name',
+    correct: true,
+    xp: 10,
+});
+```
+
+For curriculum-heavy modes, keep generators and scoring functions pure under `frontend/js/theory/` and add Node tests under `tests/frontend/`.
 
 ## Checklist
 
@@ -73,4 +87,7 @@ const MODE_MODULES = {
 - [ ] Backend router has `challenge` and/or `answer` endpoints
 - [ ] Frontend mode extends `ModeBase`
 - [ ] Mode registered in `mode-registry.js`
+- [ ] Mode listed in `PRACTICE_CATALOG`
+- [ ] Offline assets listed in `frontend/sw.js`
+- [ ] Completion event updates shared progress
 - [ ] Tests added under `tests/backend/modes/`

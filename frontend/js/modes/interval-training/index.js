@@ -179,6 +179,7 @@ export default class IntervalTrainingMode extends ModeBase {
     _showGameOver() {
         this.fretboard.clearHighlights();
         const pct = this.total > 0 ? Math.round(this.score / this.total * 100) : 0;
+        eventBus.emit('practice:complete', { skillId: this.slug, title: 'Intervals', correct: this.score, total: this.total, minutes: 4, mastery: this.score / Math.max(1, this.total) });
         this.container.innerHTML = `
             <div class="find-note-ui">
                 <div class="game-over">

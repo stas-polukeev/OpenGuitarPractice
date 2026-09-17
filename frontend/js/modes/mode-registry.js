@@ -6,6 +6,13 @@ const MODE_MODULES = {
     'string-practice': () => import('./string-practice/index.js'),
     'string-practice-auto': () => import('./string-practice/index.js'),
     'find-all-notes': () => import('./find-all-notes/index.js'),
+    'chord-practice': () => import('./chord-practice/index.js'),
+    'scale-sequence': () => import('./scale-sequence/index.js'),
+    'degree-finder': () => import('./degree-finder/index.js'),
+    'ear-training': () => import('./ear-training/index.js'),
+    'melody-memory': () => import('./melody-memory/index.js'),
+    'rhythm-lab': () => import('./rhythm-lab/index.js'),
+    'piano': () => import('./piano/index.js'),
 };
 
 const instances = {};
@@ -25,4 +32,11 @@ export const FRONTEND_MODES = [
     { slug: 'scale-practice', name: 'Scales' },
     { slug: 'guitar-practice', name: 'Random Notes' },
     { slug: 'string-practice', name: 'String Practice' },
+    { slug: 'chord-practice', name: 'Chord Builder' },
+    { slug: 'scale-sequence', name: 'Scale Journeys' },
+    { slug: 'degree-finder', name: 'Scale Degrees' },
+    { slug: 'ear-training', name: 'Ear Training' },
+    { slug: 'melody-memory', name: 'Melody Memory' },
+    { slug: 'rhythm-lab', name: 'Rhythm Lab' },
+    { slug: 'piano', name: 'Free Piano' },
 ];

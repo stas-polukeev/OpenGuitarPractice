@@ -11,6 +11,10 @@ export const DEFAULT_SETTINGS = {
         showFretNumbers: true,
         soundEnabled: true,
         tone: 'mellow', // 'mellow' or 'bright'
+        distortionEnabled: false,
+        distortionAmount: 35,
+        masterVolume: 80,
+        enabledModes: ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian', 'locrian'],
         zoom: 100, // percent
     },
     'find-the-note': {
@@ -65,6 +69,41 @@ export const DEFAULT_SETTINGS = {
         maxSemitones: 12,
         notesPerGame: 10,
         strings: [],
+    },
+    'chord-practice': {
+        practiceType: 'diatonic',
+        modeId: 'ionian',
+        root: 0,
+        rounds: 10,
+    },
+    'scale-sequence': {
+        root: 4,
+        modeId: 'aeolian',
+        layout: 'threeNps',
+        string: 0,
+        simpleOpenRoot: true,
+        traversal: 'scalar',
+        direction: 'upDown',
+        maxFret: 24,
+    },
+    'degree-finder': {
+        presetId: 'roots',
+        rounds: 6,
+    },
+    'ear-training': {
+        levelId: 'ear-home-power',
+        sessionLength: 20,
+        humPrompt: true,
+        labels: 'degrees-solfege',
+        freePractice: false,
+    },
+    'melody-memory': {
+        levelId: 'melody-2-stepwise',
+        sessionLength: 10,
+        humPrompt: true,
+        labels: 'degrees-solfege',
+        freePractice: false,
+        cleanReference: true,
     },
 };
 

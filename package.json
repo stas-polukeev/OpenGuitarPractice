@@ -1,0 +1,10 @@
+{
+  "name": "open-guitar-practice",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/frontend/*.test.mjs",
+    "check": "node --check frontend/js/app.js"
+  }
+}

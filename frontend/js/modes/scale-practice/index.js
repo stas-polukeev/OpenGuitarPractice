@@ -163,6 +163,7 @@ export default class ScalePracticeMode extends ModeBase {
 
     _showDone() {
         this.fretboard.clearHighlights();
+        eventBus.emit('practice:complete', { skillId: this.slug, title: 'Position recall', correct: this._notes.length, total: this._notes.length, minutes: 4, mastery: this._failed ? 0.7 : 0.9 });
         this.container.innerHTML = `
             <div class="find-note-ui">
                 <div class="game-over">

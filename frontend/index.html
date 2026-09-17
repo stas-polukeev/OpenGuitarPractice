@@ -2,35 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#1a1a2e">
-    <title>Guitar Training</title>
+    <meta name="theme-color" content="#101317">
+    <meta name="description" content="An offline-first practice studio for guitar, theory, rhythm, and ear training.">
+    <title>Open Guitar Practice</title>
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/assets/icons/icon-192.svg">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/fretboard.css">
-    <link rel="stylesheet" href="/css/modes/find-the-note.css">
     <script type="module" src="/js/app.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator && ['http:', 'https:'].includes(location.protocol)) {
             navigator.serviceWorker.register('/sw.js');
         }
     </script>
 </head>
 <body>
-    <header>
-        <h1>Guitar Training <span class="version">v0.7.0</span></h1>
-        <button id="settings-toggle" aria-label="Settings">&#9881; Settings</button>
+    <header class="app-header">
+        <div class="brand" aria-label="Open Guitar Practice">
+            <span class="brand-mark" aria-hidden="true">OG</span>
+            <span><strong>Open Guitar</strong><small>Practice studio · <span class="version">v1.0</span></small></span>
+        </div>
+        <button id="settings-toggle" class="icon-button" aria-label="Open settings" aria-expanded="false">&#9881;</button>
     </header>
 
     <nav id="main-nav"></nav>
 
     <main>
         <div id="content-area"></div>
-        <div id="fretboard-container"></div>
+        <div id="fretboard-container" hidden></div>
     </main>
+
+    <nav id="bottom-nav" aria-label="Primary navigation">
+        <button class="tab-button active" data-tab="today" aria-current="page"><span aria-hidden="true">◆</span>Today</button>
+        <button class="tab-button" data-tab="practice"><span aria-hidden="true">◎</span>Practice</button>
+        <button class="tab-button" data-tab="learn"><span aria-hidden="true">▤</span>Learn</button>
+        <button class="tab-button" data-tab="progress"><span aria-hidden="true">↗</span>Progress</button>
+    </nav>
 
     <aside id="settings-drawer" aria-label="Settings panel"></aside>
     <div id="settings-backdrop" onclick="document.getElementById('settings-drawer').classList.remove('open')"></div>

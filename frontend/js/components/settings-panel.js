@@ -74,6 +74,30 @@ export class SettingsPanel {
                     </select>
                 </div>
 
+                <div class="settings-group" id="s-volume-group" style="${g.soundEnabled ? '' : 'display:none'}">
+                    <label for="s-volume">Master volume: <span id="s-volume-val">${g.masterVolume ?? 80}%</span></label>
+                    <input type="range" id="s-volume" min="10" max="100" step="5" value="${g.masterVolume ?? 80}">
+                </div>
+
+                <div class="settings-group" id="s-distortion-group" style="${g.soundEnabled ? '' : 'display:none'}">
+                    <label><input type="checkbox" id="s-distortion" ${g.distortionEnabled ? 'checked' : ''}> Distorted guitar</label>
+                    <div id="s-drive-group" style="${g.distortionEnabled ? '' : 'display:none'};margin-top:8px">
+                        <label for="s-drive">Drive: <span id="s-drive-val">${g.distortionAmount ?? 35}%</span></label>
+                        <input type="range" id="s-drive" min="5" max="100" step="5" value="${g.distortionAmount ?? 35}">
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label>Modes used in random scale drills</label>
+                    <div class="string-filter mode-pool">
+                        ${[
+                            ['ionian', 'Ionian'], ['dorian', 'Dorian'], ['phrygian', 'Phrygian'],
+                            ['lydian', 'Lydian'], ['mixolydian', 'Mixolydian'],
+                            ['aeolian', 'Aeolian'], ['locrian', 'Locrian'],
+                        ].map(([id, label]) => `<label><input type="checkbox" class="s-mode-cb" value="${id}" ${(g.enabledModes || []).includes(id) ? 'checked' : ''}> ${label}</label>`).join('')}
+                    </div>
+                </div>
+
                 <div class="settings-group">
                     <label for="s-zoom">Zoom: <span id="s-zoom-val">${g.zoom ?? 100}%</span></label>
                     <input type="range" id="s-zoom" min="40" max="150" step="5" value="${g.zoom ?? 100}">
@@ -94,8 +118,37 @@ export class SettingsPanel {
             settings.setGlobal('soundEnabled', e.target.checked);
             const toneGroup = this.container.querySelector('#s-tone-group');
             if (toneGroup) toneGroup.style.display = e.target.checked ? '' : 'none';
+            const volumeGroup = this.container.querySelector('#s-volume-group');
+            const distortionGroup = this.container.querySelector('#s-distortion-group');
+            if (volumeGroup) volumeGroup.style.display = e.target.checked ? '' : 'none';
+            if (distortionGroup) distortionGroup.style.display = e.target.checked ? '' : 'none';
         });
         this._bind('s-tone', 'change', (e) => settings.setGlobal('tone', e.target.value));
+        this._bind('s-volume', 'input', (e) => {
+            const value = parseInt(e.target.value, 10);
+            this.container.querySelector('#s-volume-val').textContent = value + '%';
+            settings.setGlobal('masterVolume', value);
+        });
+        this._bind('s-distortion', 'change', (e) => {
+            settings.setGlobal('distortionEnabled', e.target.checked);
+            const group = this.container.querySelector('#s-drive-group');
+            if (group) group.style.display = e.target.checked ? '' : 'none';
+        });
+        this._bind('s-drive', 'input', (e) => {
+            const value = parseInt(e.target.value, 10);
+            this.container.querySelector('#s-drive-val').textContent = value + '%';
+            settings.setGlobal('distortionAmount', value);
+        });
+        this.container.querySelectorAll('.s-mode-cb').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const selected = [...this.container.querySelectorAll('.s-mode-cb:checked')].map(input => input.value);
+                if (selected.length === 0) {
+                    checkbox.checked = true;
+                    return;
+                }
+                settings.setGlobal('enabledModes', selected);
+            });
+        });
         this._bind('s-zoom', 'input', (e) => {
             const val = parseInt(e.target.value);
             const label = this.container.querySelector('#s-zoom-val');

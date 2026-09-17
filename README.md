@@ -1,6 +1,6 @@
 # Open Guitar Practice
 
-A mobile-first Progressive Web App for self-teaching music theory on guitar. Works offline as a PWA — install it on your phone's home screen and practice anywhere.
+An offline-first guitar learning studio for iPhone and the web. It combines fretboard recall, modes, chords, functional ear training, melodic memory, rhythm construction, and free play in one progressive curriculum.
 
 ## Screenshots
 
@@ -11,31 +11,40 @@ A mobile-first Progressive Web App for self-teaching music theory on guitar. Wor
 ## What's Inside
 
 ### Practice Modes
-- **Find the Note** — a note and string are shown, find it on the fretboard. Tracks score, streak, and supports a configurable timer.
-- **Guitar Practice** — auto-advancing flashcards. Notes appear on a timer; the answer is revealed and played after the countdown. Supports random notes or scale traversal.
-- **Interval Training** — a root note is highlighted on the fretboard, find the requested interval. Plays both notes together on correct answer.
-- **Scale Practice** — walk through a scale position note by note, ascending then descending.
+
+- **Find the Note** — locate prompted notes across a chosen pool of strings, including single-string drills and optional accidentals.
+- **Scale Degree Finder** — find roots, chord tones, characteristic modal tones, and eventually every degree across the neck.
+- **Scale Journeys** — generated three-notes-per-string patterns plus seconds, thirds, fourths, cells, ascending/descending, and one-string traversal.
+- **Chord Builder** — identify diatonic chord qualities and Roman numerals in all seven modes.
+- **Ear Training** — tonic-context scale-degree recognition with adaptive sampling, spaced review, and progressive level unlocks.
+- **Melody Memory** — transcribe short stepwise calls, leaps, major/minor phrases, and longer modal sequences.
+- **Rhythm Lab** — hear, isolate, copy, recall, and build classic rock and metal grooves using kick, snare, and hi-hat pads.
+- **Two-octave Piano** — a movable clean-reference keyboard with optional note labels.
+- **Classic drills** — interval finding, timed guitar flashcards, all-occurrences note finding, and scale-position practice.
 
 ### Theory Reference
-Interactive fretboard visualizations with collapsible educational descriptions:
-- **Intervals** — chromatic interval map showing all intervals from a root, or focus on a single interval. Supports compound intervals (>octave).
-- **Minor Scale** — natural minor positions (CAGED) and 3-notes-per-string patterns.
-- **Major Scale** — natural major with the same position/3NPS views.
-- **Minor Pentatonic** — all 5 standard positions with correct guitar-specific patterns.
-- **Major Pentatonic** — relative major pentatonic positions.
+
+- **Modes and chords** — concise explanations of triad construction, diatonic chord sequences, relative/parallel modes, characteristic degrees, and generated chord diagrams for open, barre, CAGED, and diminished shapes.
+- **Seven diatonic modes** — Ionian through Locrian, expressed as alterations of major or natural minor and tied directly to fretboard exercises.
+- **Intervals and scale maps** — interactive major, minor, pentatonic, CAGED, and 3NPS fretboard references.
 
 Each theory page links directly to a related practice exercise.
 
 ### Features
+
+- Guided Today screen, learning paths, XP, streaks, mastery, and persistent progress
+- Configurable clean or distorted guitar tone, drive, and master volume
 - SVG fretboard with real guitar fret spacing ratio
 - Vertical and horizontal orientation
-- Karplus-Strong synthesized guitar sound (mellow/bright)
+- Web Audio guitar, piano/reference tones, chords, sequences, and synthesized drums
 - 3 notation systems: English (A B C), Russian (До Ре Ми), Latin (Do Re Mi)
-- Toggleable sharps/flats, string numbering (notes or 1-6), fret numbers
+- Toggleable sharps/flats, note labels, string numbering, and fret numbers
+- Configurable mode pool used by randomized scale practice
 - Zoom slider for fitting any screen size
 - All settings saved to localStorage
 - PWA with offline support — all exercises work without a server
-- Dark theme, mobile-first design
+- Native iOS wrapper with safe-area-aware, one-handed navigation
+- Modern dark interface designed around short, focused sessions
 
 ## Installation
 
@@ -70,6 +79,39 @@ uvicorn backend.main:app --host 0.0.0.0 --port 8000
 2. Tap Share > **"Add to Home Screen"**
 3. The app installs with an icon and works offline
 
+### Native iOS app
+
+The repository includes an XcodeGen project that packages the offline-capable
+frontend in a native iOS app:
+
+```bash
+brew install xcodegen
+xcodegen generate
+open OpenGuitarPractice.xcodeproj
+```
+
+In Xcode, choose the `OpenGuitarPractice` target, select your development team
+under **Signing & Capabilities**, connect and trust your iPhone, then select it
+as the run destination and press Run.
+
+The native target bundles the frontend; no development server is required on the phone. After changing `project.yml`, regenerate the project with `xcodegen generate`.
+
+## Development and tests
+
+```bash
+python -m pytest
+npm test
+```
+
+To verify the native wrapper without a phone:
+
+```bash
+xcodebuild -project OpenGuitarPractice.xcodeproj \
+  -scheme OpenGuitarPractice \
+  -configuration Debug \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+```
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -77,7 +119,8 @@ uvicorn backend.main:app --host 0.0.0.0 --port 8000
 | Backend | FastAPI (Python 3.13) |
 | Frontend | Vanilla JS, ES modules, no build step |
 | Fretboard | SVG with real guitar fret ratio |
-| Audio | Web Audio API (Karplus-Strong synthesis) |
+| Audio | Web Audio API synthesis and sample-accurate rhythm scheduling |
+| iOS | Swift/WKWebView wrapper generated with XcodeGen |
 | Deployment | Docker Compose |
 | Storage | localStorage (no database) |
 
@@ -89,19 +132,21 @@ backend/
   modes/           Practice mode plugins (auto-discovered)
   routers/         API endpoints
 frontend/
-  js/theory/       JS mirrors of backend theory
+  js/theory/       Music theory, ear curriculum, rhythm curriculum
   js/modes/        Exercise mode implementations
   js/pages/        Theory page renderers
   js/components/   Fretboard SVG, settings panel, feedback
-  js/services/     API client, audio, settings, event bus
+  js/services/     API, audio, settings, progress, event bus
   sw.js            Service worker for offline PWA
-tests/             pytest backend tests
+ios/               Native iOS wrapper
+tests/             pytest and Node test suites
 ```
 
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md) — design decisions and data model
 - [Adding Modes](docs/ADDING_MODES.md) — how to create new practice modes
+- [Learning Design](docs/LEARNING_DESIGN.md) — curriculum rationale and research sources
 - [API Reference](docs/API.md) — backend endpoint documentation
 
 ## License

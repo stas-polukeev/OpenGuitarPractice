@@ -219,6 +219,7 @@ export default class FindAllNotesMode extends ModeBase {
         const totalPossible = this._roundScores.reduce((a, r) => a + r.total, 0);
         const totalWrong = this._roundScores.reduce((a, r) => a + r.wrong, 0);
         const pct = totalPossible > 0 ? Math.round(totalFound / totalPossible * 100) : 0;
+        eventBus.emit('practice:complete', { skillId: this.slug, title: 'Find every note', correct: totalFound, total: totalPossible, minutes: 5, mastery: totalFound / Math.max(1, totalPossible) });
 
         this.container.innerHTML = `
             <div class="find-note-ui">
